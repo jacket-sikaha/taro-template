@@ -25,6 +25,13 @@ export default function Index() {
       <Text>Hello world!</Text>
       <button
         onClick={() => {
+          Taro.navigateTo({ url: "/pages/mp-html/index" });
+        }}
+      >
+        mp-html
+      </button>
+      <button
+        onClick={() => {
           Taro.navigateTo({ url: "/pages/test/index" });
         }}
       >

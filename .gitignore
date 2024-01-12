@@ -3,3 +3,4 @@ pnpm-lock.yaml
 dist
 .swc
 .DS_Store
+yarn.lock
