@@ -9,7 +9,8 @@ function Index() {
   });
   return (
     <View className="index">
-      <a href="#">tttt</a>
+      <div>test tarojs/plugin-html</div>
+      <a href="https://bing.com">tttt</a>
       <mp-html
         content={`<div>
   sv bdsjv bjkjSDv sdvsdv 
