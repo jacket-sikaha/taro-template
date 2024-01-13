@@ -4,6 +4,7 @@ export default defineAppConfig({
     "pages/test/index",
     "pages/user/index",
     "pages/mp-html/index",
+    "pages/webview/index",
   ],
   window: {
     backgroundTextStyle: "light",
