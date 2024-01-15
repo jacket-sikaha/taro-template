@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const creImg = (imgSrc) => {
+      const img = document.createElement("img");
+      img.width = 300;
+      img.height = 400;
+      img.src = imgSrc;
+      document.body.appendChild(img);
+      img.onload = function (e) {
+        URL.revokeObjectURL(this.src); // 释放createObjectURL创建得对象
+      };
+    };
+    function exportAndDownload(file, filename = "data") {
+      const reader = new FileReader();
+      // const blob = new Blob([file], { type: "image/webp" });
+      // 转成base64的URL形式
+      reader.readAsDataURL(file);
+
+      // 文件流转换为blob URL显示大图片
+      const imgSrc = URL.createObjectURL(file);
+      console.log("imgSrc", imgSrc);
+      creImg(imgSrc);
+      reader.onload = (e) => {
+        // const a = document.createElement("a");
+        // a.download = `${filename}.webp`;
+
+        // a.href = e.target.result; // 该result属性包含一个data:表示文件数据的URL。
+
+        // console.log("e.target.result", e.target);
+
+        // document.body.appendChild(a); // 修复firefox中无法触发click
+
+        // a.click();
+        // document.body.removeChild(a);
+        creImg(e.target.result);
+      };
+    }
+
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch("https://t.mwm.moe/mp", requestOptions)
+      .then((response) => response.blob())
+      .then((result) => exportAndDownload(result))
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  </script>
+</html>
