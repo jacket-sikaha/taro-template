@@ -4,10 +4,13 @@ import { HTTP_STATUS } from "./config";
 
 const customInterceptor = (chain) => {
   const requestParams = chain.requestParams;
-  console.log("发送请求前", requestParams);
-  requestParams["responseType"] = "arraybuffer";
+  console.log("发送请求前", chain);
+  if (requestParams.url === "https://t.mwm.moe/mp") {
+    requestParams["responseType"] = "arraybuffer";
+  }
+
   return chain.proceed(requestParams).then((res) => {
-    console.log("请求完成后");
+    console.log("请求完成后", res);
     // 只要请求成功，不管返回什么状态码，都走这个回调
     if (res.statusCode === HTTP_STATUS.NOT_FOUND) {
       return Promise.reject("请求资源不存在");
@@ -25,10 +28,11 @@ const customInterceptor = (chain) => {
     } else if (res.statusCode === HTTP_STATUS.SUCCESS) {
       if (res.header["Content-Type"]?.startsWith("image/")) {
         let base64 = res.data;
-        const blob = new Blob([base64], { type: "image/png" });
-        // const imgSrc = URL.createObjectURL(blob);
-        console.log("imgSrc", blob);
-        // return imgSrc;
+        // 对于要显示或下载的buffer内容 要转成URL处理
+        // 小程序里没有h5自带的blob类型
+        const url = Taro.createBufferURL(base64);
+        console.log("FileReader", url);
+        return url;
       }
       return res.data;
     }

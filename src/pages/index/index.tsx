@@ -5,7 +5,7 @@ import http from "@/servers/http";
 import { useState } from "react";
 
 export default function Index() {
-  const [url, setURL] = useState("https://t.mwm.moe/mp");
+  const [url, setURL] = useState("");
   const getIMG = () => {
     http
       .get("https://t.mwm.moe/mp" || "https://imgapi.xl0408.top/index.php")
