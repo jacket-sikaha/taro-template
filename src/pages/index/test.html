@@ -7,34 +7,40 @@
   </head>
   <body></body>
   <script>
-    function exportAndDownload(file, filename = "data") {
-      const reader = new FileReader();
-
-      //   const blob = new Blob([file], { type: "image/webp" });
-      //   reader.readAsDataURL(blob);
-      const imgSrc = URL.createObjectURL(file);
-      console.log("imgSrc", imgSrc);
-
-      // 文件流转换为blob URL显示大图片
+    const creImg = (imgSrc) => {
       const img = document.createElement("img");
+      img.width = 300;
+      img.height = 400;
       img.src = imgSrc;
       document.body.appendChild(img);
       img.onload = function (e) {
         URL.revokeObjectURL(this.src); // 释放createObjectURL创建得对象
       };
-      //   reader.onload = (e) => {
-      //     const a = document.createElement("a");
-      //     a.download = `${filename}.webp`;
+    };
+    function exportAndDownload(file, filename = "data") {
+      const reader = new FileReader();
+      // const blob = new Blob([file], { type: "image/webp" });
+      // 转成base64的URL形式
+      reader.readAsDataURL(file);
 
-      //     a.href = e.target.result; // 该result属性包含一个data:表示文件数据的URL。
+      // 文件流转换为blob URL显示大图片
+      const imgSrc = URL.createObjectURL(file);
+      console.log("imgSrc", imgSrc);
+      creImg(imgSrc);
+      reader.onload = (e) => {
+        // const a = document.createElement("a");
+        // a.download = `${filename}.webp`;
 
-      //     console.log("e.target.result", e.target);
+        // a.href = e.target.result; // 该result属性包含一个data:表示文件数据的URL。
 
-      //     // document.body.appendChild(a); // 修复firefox中无法触发click
+        // console.log("e.target.result", e.target);
 
-      //     // a.click();
-      //     // document.body.removeChild(a);
-      //   };
+        // document.body.appendChild(a); // 修复firefox中无法触发click
+
+        // a.click();
+        // document.body.removeChild(a);
+        creImg(e.target.result);
+      };
     }
 
     var requestOptions = {
