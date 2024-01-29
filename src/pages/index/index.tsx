@@ -37,6 +37,13 @@ export default function Index() {
       >
         user
       </Button>
+      <button
+        onClick={() => {
+          Taro.navigateTo({ url: "/pages/bluetooth/index" });
+        }}
+      >
+        blue
+      </button>
       <button onClick={() => getIMG()}>click</button>
       <Image src={url} mode="aspectFit" />
     </View>
