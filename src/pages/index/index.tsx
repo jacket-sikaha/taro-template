@@ -1,7 +1,7 @@
 import { View, Text, Button, Image } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "./index.less";
-import http from "@/servers/http";
+import http from "@/utils/request/http";
 import { useState } from "react";
 
 export default function Index() {
