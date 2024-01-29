@@ -2,6 +2,8 @@ import Taro from "@tarojs/taro";
 import getBaseUrl from "./baseUrl";
 import interceptors from "./interceptors";
 
+// 这行代码在应用程序启动时执行一次，而不会在React组件的生命周期中执行多次
+// 大概就是第一次import这个文件就执行，然后得到的结果进行export，每次导入就获取这个结果
 interceptors.forEach((interceptorItem) => Taro.addInterceptor(interceptorItem));
 
 class httpRequest {
