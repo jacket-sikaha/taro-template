@@ -46,12 +46,20 @@ export default function Index() {
           <View>serviceId</View>
           <View>characteristicid</View>
           <View>val</View>
+          <View>properties</View>
         </View>
         {[...characteristicVals.keys()].map((cid) => (
           <View style={{ display: "flex", justifyContent: "space-around" }}>
-            <View>{characteristicVals.get(cid)?.sid}</View>
-            <View>{cid}</View>
-            <View>{characteristicVals.get(cid)?.val}</View>
+            <View style={{ flex: 1, overflow: "auto" }}>
+              {characteristicVals.get(cid)?.sid}
+            </View>
+            <View style={{ flex: 1, overflow: "auto" }}>{cid}</View>
+            <View style={{ flex: 1, overflow: "auto" }}>
+              {characteristicVals.get(cid)?.val}
+            </View>
+            <View style={{ flex: 1, overflow: "auto" }}>
+              {JSON.stringify(characteristicVals.get(cid)?.properties)}
+            </View>
           </View>
         ))}
       </View>

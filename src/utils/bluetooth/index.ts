@@ -115,6 +115,7 @@ export const notifyBLECharacteristicValueChange = async (
   return res;
 };
 
+// 特征值characteristicId对应的properties属性read:true的数据是可以获取的，为false的数据获取会报错
 export const readBLECharacteristicValue = async (
   deviceId: string,
   serviceId: string,

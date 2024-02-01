@@ -24,6 +24,7 @@ function useBleService() {
       {
         val: string;
         sid: string;
+        properties: any;
       }
     >
   >(new Map());
@@ -80,32 +81,44 @@ function useBleService() {
     );
     const res = await Promise.all(
       BLECharacteristic.flatMap((arr, idx) =>
-        arr
-          .filter(({ properties }) => properties.notify)
-          .map(({ uuid }) => {
-            characteristicVals.set(uuid, { val: "", sid: serviceIds[idx] });
+        arr.map(({ uuid, properties }) => {
+          characteristicVals.set(uuid, {
+            val: "",
+            sid: serviceIds[idx],
+            properties,
+          });
+          if (properties.indicate || properties.notify) {
             return notifyBLECharacteristicValueChange(
               deviceId,
               serviceIds[idx],
               uuid
             );
-          })
+          }
+          return;
+        })
       )
     );
     setCharacteristicVals(characteristicVals);
     return res;
   };
 
+  // 不是所有特征值数据都能获取
+  // 特征值获取的read方法只能获取到properties属性read:true的数据，其他为false的数据获取会报错
   const readAllData = async () => {
     try {
       const res = await Promise.all(
-        [...characteristicVals.keys()].map((characteristicId) =>
-          readBLECharacteristicValue(
-            deviceId,
-            characteristicVals.get(characteristicId)?.sid ?? "",
-            characteristicId
+        [...characteristicVals.keys()]
+          .filter(
+            (characteristicId) =>
+              characteristicVals.get(characteristicId)?.properties.read
           )
-        )
+          .map((characteristicId) =>
+            readBLECharacteristicValue(
+              deviceId,
+              characteristicVals.get(characteristicId)?.sid ?? "",
+              characteristicId
+            )
+          )
       );
       console.log("res", res);
       return res;
@@ -113,24 +126,39 @@ function useBleService() {
       console.error(error);
     }
   };
-  const onCharacteristicValChange = (res) => {
+
+  const onCharacteristicValChange = (res: {
+    /** 蓝牙特征值的 uuid */
+    characteristicId: string;
+    /** 蓝牙设备 id */
+    deviceId: string;
+    /** 蓝牙特征值对应服务的 uuid */
+    serviceId: string;
+    /** 特征值最新的值 */
+    value: ArrayBuffer;
+  }) => {
     console.log(
       `characteristic ${res.characteristicId} has changed, now is ${res.value}`
     );
-    characteristicVals.set(res.characteristicId, res.value);
+    characteristicVals.set(res.characteristicId, {
+      sid: res.serviceId,
+      val: ab2hex(res.value),
+    });
     setCharacteristicVals(new Map(characteristicVals));
     console.log(ab2hex(res.value));
   };
 
   useEffect(() => {
     initBLE()
-      .then(() => Taro.onBluetoothDeviceFound(newDevFoundCB))
+      .then(() => Taro.onBLEConnectionStateChange(console.info))
       .then(() =>
         Taro.onBLECharacteristicValueChange(onCharacteristicValChange)
       )
+      .then(() => Taro.onBluetoothDeviceFound(newDevFoundCB))
       .catch(console.error);
 
     return () => {
+      Taro.onBLEConnectionStateChange(console.info);
       Taro.offBluetoothDeviceFound(newDevFoundCB);
       Taro.onBLECharacteristicValueChange(onCharacteristicValChange);
       disconnect(deviceId).catch(console.error).finally(closeBLE);
