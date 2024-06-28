@@ -22,7 +22,7 @@ export default function Index() {
 
   return (
     <View className="index">
-      <View className="text-[#acc855] text-[100px]">Hello world!</View>
+      <div className="text-[#acc855] text-[100px]">Hello world!</div>
       <button
         onClick={() => {
           Taro.navigateTo({ url: "/pages/test/index" });
