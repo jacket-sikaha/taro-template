@@ -14,10 +14,12 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "swc": true,
+    "disableSWC": false
   },
   "compileType": "miniprogram",
-  "libVersion": "3.4.8",
+  "libVersion": "3.9.2",
   "srcMiniprogramRoot": "dist/",
   "packOptions": {
     "ignore": [],
